@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Pulse Seoul v3.0</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            background-color: #f8f9fa; 
+            margin: 0; 
+            padding: 40px 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+
+        h2 { font-size: 32px; font-weight: 700; color: #1e272e; margin-bottom: 30px; letter-spacing: -1px; }
+
+        .controls { 
+            background: white; 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
+            margin-bottom: 35px; 
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        input[type="date"] { 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            padding: 10px 15px; 
+            font-family: 'Noto Sans KR'; 
+            font-size: 16px;
+            outline: none;
+        }
+
+        /* 메인 컨테이너 가로폭을 1100px로 더 넓게 확장 */
+        .main-container {
+            width: 90%;
+            max-width: 1100px; 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #map { 
+            width: 100%; 
+            height: 600px; 
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1); 
+            background-color: #eee;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+            width: 100%;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%; 
+            background-color: #333; /* 사진 로딩 전 기본 배경색 */
+            background-size: cover; /* 사진을 카드 크기에 꽉 차게 */
+            background-position: center; /* 사진 중앙 정렬 */
+            cursor: pointer;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none; /* 테두리 제거 */
+        }
+
+        /* 사진 위에 살짝 어두운 필터 깔기 (글씨가 잘 보이도록) */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
+            z-index: 1;
+        }
+
+        .card:hover { 
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-content {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* 글씨를 카드 아래쪽으로 내리기 */
+            padding: 20px;
+            text-align: left; /* 좌측 정렬 */
+            box-sizing: border-box;
+            z-index: 2; /* 필터 위로 글씨 올리기 */
+        }
+
+        /* 글씨 색상을 사진 위에서 잘 보이게 흰색으로 변경 */
+        .card-name { font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .card-addr { font-size: 13px; color: #dddddd; }
+
+        /* ---------------------------------------------------
+           상세 정보창 (모달) 스타일 - 화면의 2/3 크기
+        --------------------------------------------------- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none; /* 기본은 숨김 */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            width: 66vw;  /* 화면 너비의 2/3 */
+            height: 66vh; /* 화면 높이의 2/3 */
+            border-radius: 30px;
+            position: relative;
+            padding: 50px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 30px; right: 30px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #ccc;
+            transition: 0.2s;
+        }
+        .close-btn:hover { color: #333; }
+
+        .modal-header { border-bottom: 2px solid #ff5a5f; padding-bottom: 20px; margin-bottom: 30px; }
+        .modal-title { font-size: 36px; font-weight: 700; color: #ff5a5f; margin: 0; }
+        .modal-body { flex: 1; overflow-y: auto; font-size: 18px; line-height: 1.8; color: #444; }
+        .modal-info-item { margin-bottom: 20px; }
+        .info-label { font-weight: 700; color: #999; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+    </style>
+    
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=fd474115e070b6ee7ecb4093184da7b0"></script>
+</head>
+<body>
+
+    <h2>🛍️ Popup Pulse Seoul</h2>
+    
+    <div class="controls">
+        <label for="datePicker">언제 방문하실 건가요?</label>
+        <input type="date" id="datePicker">
+    </div>
+
+    <div class="main-container">
+        <div id="map"></div>
+        <div class="grid-container" id="gridContainer"></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <div class="modal-header">
+                <h1 class="modal-title" id="modalTitle">팝업 이름</h1>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info-item">
+                    <span class="info-label">주소</span>
+                    <div id="modalAddr">서울특별시 성수동...</div>
+                </div>
+                <div class="modal-info-item">
+                    <span class="info-label">상세 설명</span>
+                    <div id="modalDesc">여기에 팝업스토어에 대한 아주 디테일한 설명이 들어갑니다.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var mapContainer = document.getElementById('map');
+        var mapOption = { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 8 };
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+        var markers = [];
+
+        // 모달 관련 요소
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // 모달 열기 함수
+        function openDetail(popup) {
+            document.getElementById('modalTitle').innerText = popup.name;
+            document.getElementById('modalAddr').innerText = popup.address;
+            document.getElementById('modalDesc').innerText = popup.description;
+            modalOverlay.style.display = 'flex';
+        }
+
+        // 모달 닫기
+        closeBtn.onclick = () => { modalOverlay.style.display = 'none'; };
+        window.onclick = (e) => { if (e.target == modalOverlay) modalOverlay.style.display = 'none'; };
+
+        document.getElementById('datePicker').addEventListener('change', async function(e) {
+            const selectedDate = e.target.value;
+            const response = await fetch(`/api/popups?target_date=${selectedDate}`);
+            const result = await response.json();
+            
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+            const gridContainer = document.getElementById('gridContainer');
+            gridContainer.innerHTML = '';
+
+            result.data.forEach(popup => {
+                var markerPosition = new kakao.maps.LatLng(popup.lat, popup.lng); 
+                var marker = new kakao.maps.Marker({ position: markerPosition, map: map });
+                
+                kakao.maps.event.addListener(marker, 'click', () => {
+                    map.panTo(markerPosition);
+                    openDetail(popup);
+                });
+                markers.push(marker);
+
+                // 하단 카드뉴스형 직사각형(정사각형) 생성
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // 👇 이 부분이 핵심입니다! 배경 이미지 주소 넣기
+                card.style.backgroundImage = `url('${popup.image_url}')`; 
+                
+                card.innerHTML = `
+                    <div class="card-content">
+                        <div class="card-name">${popup.name}</div>
+                        <div class="card-addr">${popup.address.split(' ').slice(0, 2).join(' ')}</div>
+                    </div>
+                `;
+                card.onclick = () => {
+                    map.panTo(markerPosition);
+                    openDetail(popup);
+                };
+                gridContainer.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
