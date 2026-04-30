@@ -2,258 +2,321 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popup Pulse Seoul v3.0</title>
-    
+    <title>Popup Pulse Seoul - Minimal</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        body { 
-            font-family: 'Noto Sans KR', sans-serif; 
-            background-color: #f8f9fa; 
-            margin: 0; 
-            padding: 40px 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
+        /* 기본 설정 및 미니멀리즘 테마 */
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0f0f0; margin: 0; padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
+        h2 { font-size: 36px; font-weight: 700; color: #000; margin-bottom: 30px; text-transform: uppercase; letter-spacing: -1px; }
 
-        h2 { font-size: 32px; font-weight: 700; color: #1e272e; margin-bottom: 30px; letter-spacing: -1px; }
+        .main-container { width: 95%; max-width: 1200px; display: flex; flex-direction: column; gap: 20px; }
 
-        .controls { 
-            background: white; 
-            padding: 12px 30px; 
-            border-radius: 50px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
-            margin-bottom: 35px; 
+        /* 🔥 상단 3단 컨트롤러 (왼쪽: 달력, 가운데: 태그, 오른쪽: 찜목록) */
+        .top-nav {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
+            background: white;
+            padding: 15px 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            /* 모서리 직각 */
+            border-radius: 0; 
+            border: 1px solid #111;
         }
-        
-        input[type="date"] { 
-            border: 1px solid #ddd; 
-            border-radius: 10px; 
-            padding: 10px 15px; 
-            font-family: 'Noto Sans KR'; 
-            font-size: 16px;
+
+        /* 왼쪽: 날짜 */
+        .nav-left input[type="date"] {
+            border: 1px solid #000;
+            padding: 10px 15px;
+            font-family: 'Noto Sans KR';
+            font-size: 15px;
             outline: none;
-        }
-
-        /* 메인 컨테이너 가로폭을 1100px로 더 넓게 확장 */
-        .main-container {
-            width: 90%;
-            max-width: 1100px; 
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        #map { 
-            width: 100%; 
-            height: 600px; 
-            border-radius: 20px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1); 
-            background-color: #eee;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 10px; 
-            width: 100%;
-        }
-
-        .card {
-            position: relative;
-            width: 100%;
-            padding-bottom: 100%; 
-            background-color: #333; /* 사진 로딩 전 기본 배경색 */
-            background-size: cover; /* 사진을 카드 크기에 꽉 차게 */
-            background-position: center; /* 사진 중앙 정렬 */
+            border-radius: 0; /* 직각 */
+            background: #fff;
             cursor: pointer;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: none; /* 테두리 제거 */
         }
 
-        /* 사진 위에 살짝 어두운 필터 깔기 (글씨가 잘 보이도록) */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
-            z-index: 1;
+        /* 가운데: 카테고리 태그 */
+        .nav-center { display: flex; gap: 10px; }
+        .tag-btn {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #555;
+            font-size: 14px;
+            font-family: 'Noto Sans KR';
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 0; /* 직각 */
+        }
+        .tag-btn.active, .tag-btn:hover { background: #000; color: #fff; border-color: #000; font-weight: 700; }
+
+        /* 오른쪽: 찜한 팝업 버튼 */
+        .nav-right button {
+            padding: 10px 20px;
+            background: #ff385c;
+            color: white;
+            border: 1px solid #ff385c;
+            font-size: 15px;
+            font-family: 'Noto Sans KR';
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 0; /* 직각 */
+            transition: 0.2s;
+        }
+        .nav-right button:hover { background: #e03250; }
+
+        /* 🔥 지도 디자인 (직각) */
+        #map { width: 100%; height: 600px; border-radius: 0; border: 1px solid #000; background-color: #eee; }
+
+        /* 🔥 카드뉴스 그리드 및 직각 디자인 */
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
+        
+        .card {
+            position: relative; width: 100%; padding-bottom: 100%; 
+            background-color: #111; cursor: pointer;
+            border-radius: 0; /* 직각 */
+            border: 1px solid #000;
+            overflow: hidden; /* 호버 시 이미지가 카드 밖으로 튀어나가지 않게 */
         }
 
-        .card:hover { 
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        /* 🔥 카드 호버(Zoom-in) 애니메이션용 배경 레이어 */
+        .card-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            transition: transform 0.5s ease; /* 부드러운 줌인 속도 */
+            z-index: 0;
+        }
+        .card:hover .card-bg { transform: scale(1.15); /* 마우스 올리면 15% 확대 */ }
+        
+        /* 어두운 필터 */
+        .card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.9)); z-index: 1;
         }
 
         .card-content {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end; /* 글씨를 카드 아래쪽으로 내리기 */
-            padding: 20px;
-            text-align: left; /* 좌측 정렬 */
-            box-sizing: border-box;
-            z-index: 2; /* 필터 위로 글씨 올리기 */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 25px; text-align: left; box-sizing: border-box; z-index: 2;
         }
+        .card-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .card-addr { font-size: 13px; color: #bbb; }
 
-        /* 글씨 색상을 사진 위에서 잘 보이게 흰색으로 변경 */
-        .card-name { font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .card-addr { font-size: 13px; color: #dddddd; }
-
-        /* ---------------------------------------------------
-           상세 정보창 (모달) 스타일 - 화면의 2/3 크기
-        --------------------------------------------------- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: none; /* 기본은 숨김 */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
+        /* 🔥 하트(찜하기) 버튼 */
+        .like-btn {
+            position: absolute; top: 20px; right: 20px; z-index: 3;
+            font-size: 28px; color: rgba(255,255,255,0.8); cursor: pointer;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .like-btn:hover { transform: scale(1.2); color: #fff; }
+        .like-btn.liked { color: #ff385c; }
 
-        .modal-content {
-            background: white;
-            width: 66vw;  /* 화면 너비의 2/3 */
-            height: 66vh; /* 화면 높이의 2/3 */
-            border-radius: 30px;
-            position: relative;
-            padding: 50px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 30px; right: 30px;
-            font-size: 30px;
-            cursor: pointer;
-            color: #ccc;
-            transition: 0.2s;
-        }
-        .close-btn:hover { color: #333; }
-
-        .modal-header { border-bottom: 2px solid #ff5a5f; padding-bottom: 20px; margin-bottom: 30px; }
-        .modal-title { font-size: 36px; font-weight: 700; color: #ff5a5f; margin: 0; }
-        .modal-body { flex: 1; overflow-y: auto; font-size: 18px; line-height: 1.8; color: #444; }
-        .modal-info-item { margin-bottom: 20px; }
-        .info-label { font-weight: 700; color: #999; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        /* 인포윈도우, 모달 (모두 직각) */
+        .info-box { padding: 15px; font-family: 'Noto Sans KR'; border-radius: 0; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 60vw; height: 60vh; border-radius: 0; position: relative; padding: 50px; box-sizing: border-box; display: flex; flex-direction: column; border: 2px solid #000; }
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 35px; cursor: pointer; color: #000; }
+        
+        /* 찜 목록 리스트 스타일 */
+        .wish-item { padding: 15px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .wish-item-name { font-weight: 700; font-size: 18px; color: #111; }
     </style>
     
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=fd474115e070b6ee7ecb4093184da7b0"></script>
 </head>
 <body>
 
-    <h2>🛍️ Popup Pulse Seoul</h2>
+    <h2>Seoul Pop-up Archive</h2>
     
-    <div class="controls">
-        <label for="datePicker">언제 방문하실 건가요?</label>
-        <input type="date" id="datePicker">
-    </div>
-
     <div class="main-container">
+        <!-- 🔥 상단 3단 컨트롤러 -->
+        <div class="top-nav">
+            <div class="nav-left">
+                <input type="date" id="datePicker">
+            </div>
+            
+            <div class="nav-center" id="categoryBox">
+                <button class="tag-btn active" data-cat="전체">전체보기</button>
+                <button class="tag-btn" data-cat="패션">패션</button>
+                <button class="tag-btn" data-cat="뷰티">뷰티</button>
+                <button class="tag-btn" data-cat="캐릭터">캐릭터</button>
+                <button class="tag-btn" data-cat="푸드">푸드</button>
+                <button class="tag-btn" data-cat="라이프">라이프</button>
+            </div>
+            
+            <div class="nav-right">
+                <button id="openWishlistBtn">❤️ 찜한 pop-up (<span id="wishCount">0</span>)</button>
+            </div>
+        </div>
+
         <div id="map"></div>
         <div class="grid-container" id="gridContainer"></div>
     </div>
 
-    <div class="modal-overlay" id="modalOverlay">
+    <!-- 상세정보 모달 -->
+    <div class="modal-overlay" id="detailModal">
         <div class="modal-content">
-            <span class="close-btn" id="closeBtn">&times;</span>
-            <div class="modal-header">
-                <h1 class="modal-title" id="modalTitle">팝업 이름</h1>
-            </div>
-            <div class="modal-body">
-                <div class="modal-info-item">
-                    <span class="info-label">주소</span>
-                    <div id="modalAddr">서울특별시 성수동...</div>
-                </div>
-                <div class="modal-info-item">
-                    <span class="info-label">상세 설명</span>
-                    <div id="modalDesc">여기에 팝업스토어에 대한 아주 디테일한 설명이 들어갑니다.</div>
-                </div>
+            <span class="close-btn" onclick="document.getElementById('detailModal').style.display='none'">&times;</span>
+            <h1 id="modalTitle" style="margin-top:0;">팝업 이름</h1>
+            <p style="color:#777; font-weight:700;" id="modalCat">카테고리</p>
+            <hr style="width:100%; border:1px solid #000; margin: 20px 0;">
+            <p><strong>위치:</strong> <span id="modalAddr"></span></p>
+            <p><strong>설명:</strong> <span id="modalDesc"></span></p>
+        </div>
+    </div>
+
+    <!-- 찜 목록 모달 -->
+    <div class="modal-overlay" id="wishlistModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('wishlistModal').style.display='none'">&times;</span>
+            <h1 style="margin-top:0;">❤️ 나의 찜 목록</h1>
+            <hr style="width:100%; border:1px solid #000; margin: 20px 0;">
+            <div id="wishlistContent" style="overflow-y: auto; flex: 1;">
+                <!-- 찜한 목록이 여기에 뜹니다 -->
             </div>
         </div>
     </div>
 
     <script>
-        var mapContainer = document.getElementById('map');
-        var mapOption = { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 8 };
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+        var map = new kakao.maps.Map(document.getElementById('map'), { center: new kakao.maps.LatLng(37.5445, 126.9780), level: 8 });
         var markers = [];
+        var infowindows = [];
+        
+        let currentData = []; // 서버에서 받은 전체 데이터
+        let selectedCategory = '전체'; // 현재 선택된 카테고리
+        let wishlist = []; // 찜한 팝업 데이터 보관함
 
-        // 모달 관련 요소
-        const modalOverlay = document.getElementById('modalOverlay');
-        const closeBtn = document.getElementById('closeBtn');
+        // 카테고리별 마커 색상 (SVG 생성기)
+        function getMarkerImage(category) {
+            let color = '#111'; // 기본 검정
+            if(category === '패션') color = '#0984e3'; // 파랑
+            else if(category === '뷰티') color = '#e84393'; // 핑크
+            else if(category === '푸드') color = '#d63031'; // 빨강
+            else if(category === '캐릭터') color = '#f39c12'; // 주황
+            else if(category === '라이프') color = '#27ae60'; // 초록
 
-        // 모달 열기 함수
-        function openDetail(popup) {
-            document.getElementById('modalTitle').innerText = popup.name;
-            document.getElementById('modalAddr').innerText = popup.address;
-            document.getElementById('modalDesc').innerText = popup.description;
-            modalOverlay.style.display = 'flex';
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="${color}" d="M18 0C10.82 0 5 5.82 5 13c0 7.85 11.53 21.72 12.28 22.65.38.47 1.06.47 1.44 0C19.47 34.72 31 20.85 31 13c0-7.18-5.82-13-13-13z"/><circle fill="#fff" cx="18" cy="13" r="6"/></svg>`;
+            return new kakao.maps.MarkerImage('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg), new kakao.maps.Size(36, 36), {offset: new kakao.maps.Point(18, 36)});
         }
 
-        // 모달 닫기
-        closeBtn.onclick = () => { modalOverlay.style.display = 'none'; };
-        window.onclick = (e) => { if (e.target == modalOverlay) modalOverlay.style.display = 'none'; };
+        // 데이터 화면에 그리기 함수
+        function renderUI() {
+            // 1. 카테고리 필터링
+            const filteredData = selectedCategory === '전체' 
+                ? currentData 
+                : currentData.filter(p => p.category === selectedCategory);
 
-        document.getElementById('datePicker').addEventListener('change', async function(e) {
-            const selectedDate = e.target.value;
-            const response = await fetch(`/api/popups?target_date=${selectedDate}`);
-            const result = await response.json();
-            
-            markers.forEach(marker => marker.setMap(null));
-            markers = [];
-            const gridContainer = document.getElementById('gridContainer');
-            gridContainer.innerHTML = '';
+            // 2. 기존 지도 마커 및 그리드 지우기
+            markers.forEach(m => m.setMap(null));
+            infowindows.forEach(iw => iw.close());
+            markers = []; infowindows = [];
+            const grid = document.getElementById('gridContainer');
+            grid.innerHTML = '';
 
-            result.data.forEach(popup => {
-                var markerPosition = new kakao.maps.LatLng(popup.lat, popup.lng); 
-                var marker = new kakao.maps.Marker({ position: markerPosition, map: map });
+            // 3. 필터링된 데이터로 마커 및 카드 다시 생성
+            filteredData.forEach(popup => {
+                // --- 지도 마커 ---
+                let pos = new kakao.maps.LatLng(popup.lat, popup.lng);
+                let marker = new kakao.maps.Marker({ position: pos, map: map, image: getMarkerImage(popup.category) });
+                let iw = new kakao.maps.InfoWindow({ content: `<div class="info-box"><b>${popup.name}</b></div>` });
                 
                 kakao.maps.event.addListener(marker, 'click', () => {
-                    map.panTo(markerPosition);
+                    map.panTo(pos);
                     openDetail(popup);
                 });
-                markers.push(marker);
+                markers.push(marker); infowindows.push(iw);
 
-                // 하단 카드뉴스형 직사각형(정사각형) 생성
+                // --- 카드 생성 ---
+                let isLiked = wishlist.some(item => item.id === popup.id);
                 const card = document.createElement('div');
                 card.className = 'card';
-                
-                // 👇 이 부분이 핵심입니다! 배경 이미지 주소 넣기
-                card.style.backgroundImage = `url('${popup.image_url}')`; 
-                
                 card.innerHTML = `
+                    <div class="card-bg" style="background-image: url('${popup.image_url}')"></div>
+                    <div class="like-btn ${isLiked ? 'liked' : ''}" data-id="${popup.id}">${isLiked ? '♥' : '♡'}</div>
                     <div class="card-content">
+                        <div style="color:${getMarkerImage(popup.category).color}; font-weight:700; font-size:12px; margin-bottom:5px;">[${popup.category}]</div>
                         <div class="card-name">${popup.name}</div>
                         <div class="card-addr">${popup.address.split(' ').slice(0, 2).join(' ')}</div>
                     </div>
                 `;
-                card.onclick = () => {
-                    map.panTo(markerPosition);
-                    openDetail(popup);
+                
+                // 카드 클릭 시 상세창 열기
+                card.onclick = () => { map.panTo(pos); openDetail(popup); };
+                
+                // 하트 클릭 이벤트 (카드 클릭 이벤트 막기)
+                card.querySelector('.like-btn').onclick = (e) => {
+                    e.stopPropagation(); 
+                    toggleWishlist(popup, e.target);
                 };
-                gridContainer.appendChild(card);
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // 찜하기 추가/삭제 로직
+        function toggleWishlist(popup, heartElement) {
+            const index = wishlist.findIndex(item => item.id === popup.id);
+            if (index > -1) {
+                wishlist.splice(index, 1); // 이미 찜했다면 삭제
+                heartElement.innerText = '♡';
+                heartElement.classList.remove('liked');
+            } else {
+                wishlist.push(popup); // 찜하기 추가
+                heartElement.innerText = '♥';
+                heartElement.classList.add('liked');
+            }
+            document.getElementById('wishCount').innerText = wishlist.length; // 상단 개수 업데이트
+        }
+
+        // 찜 목록 모달 열기
+        document.getElementById('openWishlistBtn').onclick = () => {
+            const content = document.getElementById('wishlistContent');
+            if(wishlist.length === 0) {
+                content.innerHTML = '<p style="color:#777;">아직 찜한 팝업이 없습니다.</p>';
+            } else {
+                content.innerHTML = wishlist.map(p => `
+                    <div class="wish-item">
+                        <div>
+                            <span style="font-size:12px; color:#ff385c; font-weight:700;">[${p.category}]</span>
+                            <div class="wish-item-name">${p.name}</div>
+                            <div style="font-size:13px; color:#777;">${p.date || p.start_date} ~ ${p.end_date}</div>
+                        </div>
+                        <button style="padding:8px 15px; background:#111; color:#fff; border:none; cursor:pointer;" onclick="openDetail(wishlist.find(x=>x.id===${p.id}))">상세보기</button>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('wishlistModal').style.display = 'flex';
+        };
+
+        // 상세창 열기
+        function openDetail(popup) {
+            document.getElementById('modalTitle').innerText = popup.name;
+            document.getElementById('modalCat').innerText = `#${popup.category}`;
+            document.getElementById('modalAddr').innerText = popup.address;
+            document.getElementById('modalDesc').innerText = popup.description;
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        // 날짜가 바뀌면 서버에서 데이터 불러오기
+        document.getElementById('datePicker').addEventListener('change', async function(e) {
+            const res = await fetch(`/api/popups?target_date=${e.target.value}`);
+            const result = await res.json();
+            currentData = result.data;
+            renderUI();
+        });
+
+        // 상단 카테고리 태그 클릭 이벤트
+        document.querySelectorAll('.tag-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // 버튼 색상 변경
+                document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // 데이터 재정렬
+                selectedCategory = e.target.dataset.cat;
+                renderUI();
             });
         });
     </script>
