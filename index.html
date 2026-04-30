@@ -2,80 +2,63 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Popup Pulse Seoul - Final Deep Link Version</title>
+    <title>Popup Pulse Seoul - Final Polished Version</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- 📅 FullCalendar 라이브러리 -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
     
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; margin: 0; padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
         h2 { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
-
         .main-container { width: 95%; max-width: 1200px; display: flex; flex-direction: column; gap: 15px; margin: 0 auto; }
-
+        
         .top-nav { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .nav-left input[type="date"] { border: 1px solid #ddd; padding: 10px 15px; font-family: 'Noto Sans KR'; font-size: 15px; outline: none; background: #fff; cursor: pointer; transition: 0.2s; }
-        .nav-left input[type="date"]:focus { border-color: #111; }
+        .nav-left input[type="date"] { border: 1px solid #ddd; padding: 10px 15px; font-family: 'Noto Sans KR'; font-size: 15px; outline: none; background: #fff; cursor: pointer; }
         .nav-center { display: flex; gap: 10px; }
-        .tag-btn { padding: 10px 20px; border: 1px solid #ddd; background: #fff; color: #555; font-size: 14px; font-family: 'Noto Sans KR'; cursor: pointer; transition: all 0.2s; }
+        .tag-btn { padding: 10px 20px; border: 1px solid #ddd; background: #fff; color: #555; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .tag-btn.active, .tag-btn:hover { background: #111; color: #fff; border-color: #111; font-weight: 700; }
-        .nav-right button { padding: 10px 20px; background: #ff385c; color: white; border: none; box-shadow: 0 4px 10px rgba(255, 56, 92, 0.3); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .nav-right button:hover { background: #e03250; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255, 56, 92, 0.4); }
-
+        .nav-right button { padding: 10px 20px; background: #ff385c; color: white; border: none; font-size: 15px; font-weight: 700; cursor: pointer; }
+        
         .map-section-wrapper { position: relative; width: 100%; }
-
-        .content-wrapper { position: relative; width: 100%; height: 600px; overflow: hidden; background: #fff; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border-radius: 0; }
+        .content-wrapper { position: relative; width: 100%; height: 600px; overflow: hidden; background: #fff; box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
         .view-panel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); background: #fff; }
         #map-panel { transform: translateX(0); }
         #calendar-panel { transform: translateX(100%); padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; }
         #map { width: 100%; height: 100%; background-color: #eee; }
         .show-calendar #map-panel { transform: translateX(-100%); }
         .show-calendar #calendar-panel { transform: translateX(0); }
-
-        .side-toggle-wrapper { position: absolute; top: 0; right: -95px; display: flex; flex-direction: column; width: 80px; height: max-content; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #ddd; border-radius: 0; }
-        .view-btn { width: 100%; padding: 15px 0; background: #fff; color: #555; border: none; border-bottom: 1px solid #eee; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
-        .view-btn:last-child { border-bottom: none; } 
-        .view-btn:hover { background: #f8f9fa; color: #111; }
+        
+        .side-toggle-wrapper { position: absolute; top: 0; right: -95px; display: flex; flex-direction: column; width: 80px; height: max-content; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #ddd; }
+        .view-btn { width: 100%; padding: 15px 0; background: #fff; color: #555; border: none; border-bottom: 1px solid #eee; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; }
         .view-btn.active-view { background: #111; color: #fff; pointer-events: none; }
-
-        .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid { border-color: #eee !important; }
-        .fc-toolbar-title { font-weight: 700 !important; font-size: 24px !important; color: #111; }
-        .fc-button-primary { background-color: #111 !important; border-color: #111 !important; border-radius: 0 !important; font-family: 'Noto Sans KR' !important;}
-        .fc-button-primary:hover { background-color: #ff385c !important; border-color: #ff385c !important; }
-        .fc-event { border-radius: 0 !important; border: none !important; cursor: pointer; padding: 2px 4px; font-weight: 700;}
-        .fc-day-today { background-color: #f8e9eb !important; }
-        .fc-view-harness { transition: opacity 0.3s ease; }
-        .fc-view-harness-fade { opacity: 0; }
-
+        
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; margin-top: 10px;}
-        .card { position: relative; width: 100%; padding-bottom: 100%; background-color: #111; cursor: pointer; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06); transition: transform 0.4s ease, box-shadow 0.4s ease; border-radius: 0; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        .card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: transform 0.5s ease; z-index: 0; }
-        .card:hover .card-bg { transform: scale(1.1); }
+        .card { position: relative; width: 100%; padding-bottom: 100%; background-color: #111; cursor: pointer; overflow: hidden; transition: 0.4s ease; }
+        .card:hover { transform: translateY(-8px); }
+        .card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: 0.5s ease; z-index: 0; }
         .card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.9)); z-index: 1; }
-        .card-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; text-align: left; box-sizing: border-box; z-index: 2; }
+        .card-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; box-sizing: border-box; z-index: 2; }
         .card-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
         .card-addr { font-size: 13px; color: #bbb; }
         
         .card-actions { position: absolute; top: 20px; right: 20px; z-index: 3; display: flex; gap: 15px; align-items: center; }
-        .action-btn { font-size: 26px; color: rgba(255,255,255,0.8); cursor: pointer; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .action-btn:hover { transform: scale(1.2); color: #fff; }
+        .action-btn { font-size: 26px; color: rgba(255,255,255,0.8); cursor: pointer; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); transition: 0.2s; display: flex; align-items: center; justify-content: center;}
         .like-btn.liked { color: #ff385c; }
-        .share-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
-        #detailModal { z-index: 1010; } 
-        .modal-content { background: white; width: 60vw; height: 60vh; position: relative; padding: 50px; box-sizing: border-box; display: flex; flex-direction: column; border: none; box-shadow: 0 25px 50px rgba(0,0,0,0.2); border-radius: 0; }
-        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 35px; cursor: pointer; color: #aaa; transition: 0.2s;}
-        .close-btn:hover { color: #111; }
-        .wish-item { padding: 15px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .wish-item-name { font-weight: 700; font-size: 18px; color: #111; }
+        .share-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.5; }
 
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 12px 24px; font-family: 'Noto Sans KR'; font-weight: 700; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: none; z-index: 9999; }
+        /* 모달 디자인 및 우선순위 수정 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        #detailModal { z-index: 2000; } /* 상세 정보 창이 찜목록보다 위에 뜨도록 설정 */
+        #wishlistModal { z-index: 1500; }
+        
+        .modal-content { background: white; width: 60vw; height: 60vh; position: relative; padding: 50px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 35px; cursor: pointer; color: #aaa; }
+        
+        /* 찜목록 버튼 스타일 */
+        .wish-view-btn { padding: 8px 16px; background: #111; color: #fff; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .wish-view-btn:hover { background: #333; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 12px 24px; font-weight: 700; display: none; z-index: 9999; }
     </style>
-    
-    <!-- 카카오 자바스크립트 키 -->
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=fd474115e070b6ee7ecb4093184da7b0"></script>
 </head>
 <body>
@@ -101,21 +84,19 @@
                 <div id="map-panel" class="view-panel"><div id="map"></div></div>
                 <div id="calendar-panel" class="view-panel"><div id="calendar" style="height: 100%;"></div></div>
             </div>
-
             <div class="side-toggle-wrapper">
                 <button class="view-btn active-view" id="mapViewBtn">🗺️ 맵</button>
                 <button class="view-btn" id="calViewBtn">📅 달력</button>
             </div>
         </div>
-
         <div class="grid-container" id="gridContainer"></div>
     </div>
 
     <div class="modal-overlay" id="detailModal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('detailModal').style.display='none'">&times;</span>
-            <h1 id="modalTitle" style="margin-top:0;">팝업 이름</h1>
-            <p style="color:#777; font-weight:700;" id="modalCat">카테고리</p>
+            <h1 id="modalTitle">팝업 이름</h1>
+            <p id="modalCat" style="font-weight:700;"></p>
             <hr style="width:100%; border:1px solid #eee; margin: 20px 0;">
             <p><strong>위치:</strong> <span id="modalAddr"></span></p>
             <p><strong>설명:</strong> <span id="modalDesc"></span></p>
@@ -126,118 +107,92 @@
     <div class="modal-overlay" id="wishlistModal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('wishlistModal').style.display='none'">&times;</span>
-            <h1 style="margin-top:0;">❤️ 나의 찜 목록</h1>
+            <h1>❤️ 나의 찜 목록</h1>
             <hr style="width:100%; border:1px solid #eee; margin: 20px 0;">
             <div id="wishlistContent" style="overflow-y: auto; flex: 1;"></div>
         </div>
     </div>
 
-    <div id="toast">✅ 팝업스토어 정보가 클립보드에 복사되었습니다!</div>
+    <div id="toast">✅ 정보가 클립보드에 복사되었습니다!</div>
 
     <script>
         var map = new kakao.maps.Map(document.getElementById('map'), { center: new kakao.maps.LatLng(37.5445, 126.9780), level: 8 });
-        var markers = []; var infowindows = [];
-        let currentData = []; let selectedCategory = '전체'; let wishlist = [];
-        let calendarInstance = null;
+        var markers = []; let currentData = []; let wishlist = []; let calendarInstance = null; let selectedCategory = '전체';
 
+        // 카테고리별 전용 색상 설정
         function getCategoryColor(category) {
-            if(category === '패션') return '#0984e3'; 
-            if(category === '뷰티') return '#e84393'; 
-            if(category === '푸드') return '#d63031'; 
-            if(category === '캐릭터') return '#f39c12'; 
-            if(category === '라이프') return '#27ae60'; 
-            return '#111111';
+            const colors = {
+                '패션': '#0984e3',
+                '뷰티': '#e84393',
+                '캐릭터': '#f39c12',
+                '푸드': '#d63031',
+                '라이프': '#27ae60'
+            };
+            return colors[category] || '#111111';
         }
 
+        // 카테고리별 마커 이미지 생성
         function getMarkerImage(category) {
             const color = getCategoryColor(category);
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="${color}" d="M18 0C10.82 0 5 5.82 5 13c0 7.85 11.53 21.72 12.28 22.65.38.47 1.06.47 1.44 0C19.47 34.72 31 20.85 31 13c0-7.18-5.82-13-13-13z"/><circle fill="#fff" cx="18" cy="13" r="6"/></svg>`;
             return new kakao.maps.MarkerImage('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg), new kakao.maps.Size(36, 36), {offset: new kakao.maps.Point(18, 36)});
         }
 
-        function renderCalendar(filteredData) {
-            var calendarEl = document.getElementById('calendar');
-            if(calendarInstance) { calendarInstance.destroy(); }
-            
-            const calendarEvents = filteredData.map(popup => ({
-                title: popup.name, start: popup.start_date, end: popup.end_date + 'T23:59:00',
-                backgroundColor: getCategoryColor(popup.category), extendedProps: popup
-            }));
-            
-            calendarInstance = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                initialDate: document.getElementById('datePicker').value,
-                events: calendarEvents,
-                headerToolbar: { left: 'prev,next', center: 'title', right: 'today' },
-                datesSet: function() {
-                    let harness = document.querySelector('.fc-view-harness');
-                    if (harness) {
-                        harness.classList.add('fc-view-harness-fade');
-                        setTimeout(() => { harness.classList.remove('fc-view-harness-fade'); }, 50);
-                    }
-                },
-                eventClick: function(info) { openDetail(info.event.extendedProps); }
-            });
-            calendarInstance.render();
-        }
-
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2500);
-        }
-
         function renderUI() {
             const filteredData = selectedCategory === '전체' ? currentData : currentData.filter(p => p.category === selectedCategory);
             markers.forEach(m => m.setMap(null)); markers = [];
-            
+            const grid = document.getElementById('gridContainer');
+            grid.innerHTML = '';
+
             filteredData.forEach(popup => {
                 let pos = new kakao.maps.LatLng(popup.lat, popup.lng);
                 let marker = new kakao.maps.Marker({ position: pos, map: map, image: getMarkerImage(popup.category) });
                 kakao.maps.event.addListener(marker, 'click', () => { map.panTo(pos); openDetail(popup); });
                 markers.push(marker);
-            });
 
-            const grid = document.getElementById('gridContainer');
-            grid.innerHTML = '';
-            filteredData.forEach(popup => {
                 let isLiked = wishlist.some(item => item.id === popup.id);
+                const color = getCategoryColor(popup.category);
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <div class="card-bg" style="background-image: url('${popup.image_url}')"></div>
                     <div class="card-actions">
-                        <div class="action-btn share-btn" title="공유하기">
-                            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                        </div>
+                        <div class="action-btn share-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></div>
                         <div class="action-btn like-btn ${isLiked ? 'liked' : ''}">${isLiked ? '♥' : '♡'}</div>
                     </div>
                     <div class="card-content">
-                        <div style="color:${getCategoryColor(popup.category)}; font-weight:700; font-size:12px; margin-bottom:5px;">[${popup.category}]</div>
+                        <div style="color:${color}; font-weight:700; font-size:12px;">[${popup.category}]</div>
                         <div class="card-name">${popup.name}</div>
-                        <div class="card-addr">${popup.address.split(' ').slice(0, 2).join(' ')}</div>
-                    </div>
-                `;
-                card.onclick = () => { map.panTo(new kakao.maps.LatLng(popup.lat, popup.lng)); openDetail(popup); };
+                        <div class="card-addr">${popup.address.split(' ').slice(0,2).join(' ')}</div>
+                    </div>`;
+                
+                card.onclick = () => { map.panTo(pos); openDetail(popup); };
                 card.querySelector('.like-btn').onclick = (e) => { e.stopPropagation(); toggleWishlist(popup, e.target); };
-                card.querySelector('.share-btn').onclick = async (e) => {
+                card.querySelector('.share-btn').onclick = (e) => {
                     e.stopPropagation();
-                    const shareUrl = `https://popup-map.onrender.com/?id=${popup.id}&date=${popup.start_date}`;
-                    const shareText = `✨ [${popup.category}] ${popup.name}\n📍 위치: ${popup.address}\n📅 기간: ${popup.start_date} ~ ${popup.end_date}\n📝 소개: ${popup.description}\n🔗 ${shareUrl}`;
-                    if (navigator.share) await navigator.share({ title: popup.name, text: shareText });
-                    else { await navigator.clipboard.writeText(shareText); showToast(); }
+                    const shareUrl = `${window.location.origin}/?id=${popup.id}&date=${popup.start_date}`;
+                    const text = `✨ [${popup.category}] ${popup.name}\n📍 위치: ${popup.address}\n🔗 바로보기: ${shareUrl}`;
+                    navigator.clipboard.writeText(text).then(() => {
+                        document.getElementById('toast').style.display='block';
+                        setTimeout(()=>document.getElementById('toast').style.display='none', 2000);
+                    });
                 };
                 grid.appendChild(card);
             });
             renderCalendar(filteredData);
         }
 
-        const mapViewBtn = document.getElementById('mapViewBtn');
-        const calViewBtn = document.getElementById('calViewBtn');
-        const contentWrapper = document.getElementById('contentWrapper');
-
-        mapViewBtn.onclick = () => { contentWrapper.classList.remove('show-calendar'); mapViewBtn.classList.add('active-view'); calViewBtn.classList.remove('active-view'); setTimeout(() => map.relayout(), 600); };
-        calViewBtn.onclick = () => { contentWrapper.classList.add('show-calendar'); calViewBtn.classList.add('active-view'); mapViewBtn.classList.remove('active-view'); setTimeout(() => calendarInstance.render(), 600); };
+        function renderCalendar(data) {
+            if(calendarInstance) calendarInstance.destroy();
+            calendarInstance = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth',
+                initialDate: document.getElementById('datePicker').value,
+                headerToolbar: { left: 'prev,next', center: 'title', right: 'today' },
+                events: data.map(p => ({ title: p.name, start: p.start_date, end: p.end_date, extendedProps: p, backgroundColor: getCategoryColor(p.category) })),
+                eventClick: (info) => openDetail(info.event.extendedProps)
+            });
+            calendarInstance.render();
+        }
 
         function toggleWishlist(popup, heartElement) {
             const index = wishlist.findIndex(item => item.id === popup.id);
@@ -246,39 +201,51 @@
             document.getElementById('wishCount').innerText = wishlist.length;
         }
 
-        document.getElementById('openWishlistBtn').onclick = () => {
-            const content = document.getElementById('wishlistContent');
-            if(wishlist.length === 0) content.innerHTML = '<p style="color:#777;">아직 찜한 팝업이 없습니다.</p>';
-            else {
-                content.innerHTML = wishlist.map(p => `
-                    <div class="wish-item">
-                        <div>
-                            <span style="font-size:12px; color:#ff385c; font-weight:700;">[${p.category}]</span>
-                            <div class="wish-item-name">${p.name}</div>
-                            <div style="font-size:13px; color:#777;">${p.start_date} ~ ${p.end_date}</div>
-                        </div>
-                        <button style="padding:8px 15px; background:#111; color:#fff; border:none; cursor:pointer; border-radius:4px;" onclick="openDetail(wishlist.find(x=>x.id===${p.id}))">상세보기</button>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('wishlistModal').style.display = 'flex';
-        };
-
         function openDetail(popup) {
+            const color = getCategoryColor(popup.category);
             document.getElementById('modalTitle').innerText = popup.name;
             document.getElementById('modalCat').innerText = `#${popup.category}`;
+            document.getElementById('modalCat').style.color = color;
             document.getElementById('modalAddr').innerText = popup.address;
             document.getElementById('modalDesc').innerText = popup.description;
             document.getElementById('modalDate').innerText = `${popup.start_date} ~ ${popup.end_date}`;
             document.getElementById('detailModal').style.display = 'flex';
         }
 
-        document.getElementById('datePicker').addEventListener('change', async function(e) {
+        document.getElementById('mapViewBtn').onclick = () => { 
+            document.getElementById('contentWrapper').classList.remove('show-calendar');
+            document.getElementById('mapViewBtn').classList.add('active-view');
+            document.getElementById('calViewBtn').classList.remove('active-view');
+            setTimeout(()=>map.relayout(), 600);
+        };
+        document.getElementById('calViewBtn').onclick = () => { 
+            document.getElementById('contentWrapper').classList.add('show-calendar');
+            document.getElementById('calViewBtn').classList.add('active-view');
+            document.getElementById('mapViewBtn').classList.remove('active-view');
+            setTimeout(()=>calendarInstance.render(), 600);
+        };
+
+        document.getElementById('openWishlistBtn').onclick = () => {
+            const content = document.getElementById('wishlistContent');
+            content.innerHTML = wishlist.length === 0 ? '<p>찜한 팝업이 없습니다.</p>' : wishlist.map(p => `
+                <div style="padding:15px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                    <div><b>${p.name}</b><br><small style="color:#777;">${p.address}</small></div>
+                    <button class="wish-view-btn" onclick="openDetailById(${p.id})">상세보기</button>
+                </div>`).join('');
+            document.getElementById('wishlistModal').style.display = 'flex';
+        };
+
+        window.openDetailById = (id) => {
+            const target = currentData.find(p => p.id == id);
+            if(target) openDetail(target);
+        };
+
+        document.getElementById('datePicker').onchange = async (e) => {
             const res = await fetch(`/api/popups?target_date=${e.target.value}`);
             const result = await res.json();
             currentData = result.data;
             renderUI();
-        });
+        };
 
         document.querySelectorAll('.tag-btn').forEach(btn => {
             btn.onclick = (e) => {
@@ -291,34 +258,28 @@
 
         async function initPage() {
             const urlParams = new URLSearchParams(window.location.search);
-            const sharedPopupId = urlParams.get('id');
+            const sharedId = urlParams.get('id');
             const sharedDate = urlParams.get('date');
-            
-            // 오늘 날짜 계산
-            const today = new Date();
-            const todayString = today.toISOString().split('T')[0];
-
-            // 공유 날짜가 있으면 그것을, 없으면 오늘 날짜를 기본값으로 사용
-            const targetDate = sharedDate || todayString;
+            const today = new Date().toISOString().split('T')[0];
+            const targetDate = sharedDate || today;
             document.getElementById('datePicker').value = targetDate;
             
             try {
                 const res = await fetch(`/api/popups?target_date=${targetDate}`);
                 const result = await res.json();
-                currentData = result.data;
-            } catch(e) { console.error("로드 실패", e); currentData = []; }
-            
-            renderUI();
+                currentData = result.data || [];
+                renderUI();
 
-            if (sharedPopupId && currentData.length > 0) {
-                const targetPopup = currentData.find(p => String(p.id) === String(sharedPopupId));
-                if (targetPopup) {
-                    setTimeout(() => {
-                        map.panTo(new kakao.maps.LatLng(targetPopup.lat, targetPopup.lng));
-                        openDetail(targetPopup);
-                    }, 600); 
+                if (sharedId) {
+                    const target = currentData.find(p => String(p.id) === String(sharedId));
+                    if (target) {
+                        setTimeout(() => {
+                            map.panTo(new kakao.maps.LatLng(target.lat, target.lng));
+                            openDetail(target);
+                        }, 800);
+                    }
                 }
-            }
+            } catch(e) { console.error(e); }
         }
 
         initPage();
