@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Popup Pulse Seoul - Final Clean Version</title>
+    <title>Popup Pulse Seoul - Final Deep Link Version</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- 📅 FullCalendar 라이브러리 -->
@@ -12,10 +12,8 @@
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; margin: 0; padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
         h2 { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
 
-        /* 전체 컨테이너는 1200px로 정확히 제한하고 화면 정중앙에 배치 */
         .main-container { width: 95%; max-width: 1200px; display: flex; flex-direction: column; gap: 15px; margin: 0 auto; }
 
-        /* 상단 컨트롤러 */
         .top-nav { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .nav-left input[type="date"] { border: 1px solid #ddd; padding: 10px 15px; font-family: 'Noto Sans KR'; font-size: 15px; outline: none; background: #fff; cursor: pointer; transition: 0.2s; }
         .nav-left input[type="date"]:focus { border-color: #111; }
@@ -25,10 +23,8 @@
         .nav-right button { padding: 10px 20px; background: #ff385c; color: white; border: none; box-shadow: 0 4px 10px rgba(255, 56, 92, 0.3); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .nav-right button:hover { background: #e03250; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255, 56, 92, 0.4); }
 
-        /* 지도와 버튼을 함께 감싸는 뼈대 */
         .map-section-wrapper { position: relative; width: 100%; }
 
-        /* 슬라이드 컨테이너 (1200px 공간을 100% 꽉 채우는 지도 영역) */
         .content-wrapper { position: relative; width: 100%; height: 600px; overflow: hidden; background: #fff; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border-radius: 0; }
         .view-panel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); background: #fff; }
         #map-panel { transform: translateX(0); }
@@ -37,14 +33,12 @@
         .show-calendar #map-panel { transform: translateX(-100%); }
         .show-calendar #calendar-panel { transform: translateX(0); }
 
-        /* 버튼은 1200px 밖으로 쫓아냄 */
         .side-toggle-wrapper { position: absolute; top: 0; right: -95px; display: flex; flex-direction: column; width: 80px; height: max-content; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #ddd; border-radius: 0; }
         .view-btn { width: 100%; padding: 15px 0; background: #fff; color: #555; border: none; border-bottom: 1px solid #eee; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
         .view-btn:last-child { border-bottom: none; } 
         .view-btn:hover { background: #f8f9fa; color: #111; }
         .view-btn.active-view { background: #111; color: #fff; pointer-events: none; }
 
-        /* FullCalendar 스타일 */
         .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid { border-color: #eee !important; }
         .fc-toolbar-title { font-weight: 700 !important; font-size: 24px !important; color: #111; }
         .fc-button-primary { background-color: #111 !important; border-color: #111 !important; border-radius: 0 !important; font-family: 'Noto Sans KR' !important;}
@@ -54,7 +48,6 @@
         .fc-view-harness { transition: opacity 0.3s ease; }
         .fc-view-harness-fade { opacity: 0; }
 
-        /* 카드뉴스 그리드 */
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; margin-top: 10px;}
         .card { position: relative; width: 100%; padding-bottom: 100%; background-color: #111; cursor: pointer; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06); transition: transform 0.4s ease, box-shadow 0.4s ease; border-radius: 0; }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
@@ -64,11 +57,13 @@
         .card-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; text-align: left; box-sizing: border-box; z-index: 2; }
         .card-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
         .card-addr { font-size: 13px; color: #bbb; }
-        .like-btn { position: absolute; top: 20px; right: 20px; z-index: 3; font-size: 28px; color: rgba(255,255,255,0.8); cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); transition: 0.2s; }
-        .like-btn:hover { transform: scale(1.2); color: #fff; }
-        .like-btn.liked { color: #ff385c; }
         
-        /* 모달 디자인 */
+        .card-actions { position: absolute; top: 20px; right: 20px; z-index: 3; display: flex; gap: 15px; align-items: center; }
+        .action-btn { font-size: 26px; color: rgba(255,255,255,0.8); cursor: pointer; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .action-btn:hover { transform: scale(1.2); color: #fff; }
+        .like-btn.liked { color: #ff385c; }
+        .share-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         #detailModal { z-index: 1010; } 
         .modal-content { background: white; width: 60vw; height: 60vh; position: relative; padding: 50px; box-sizing: border-box; display: flex; flex-direction: column; border: none; box-shadow: 0 25px 50px rgba(0,0,0,0.2); border-radius: 0; }
@@ -76,6 +71,8 @@
         .close-btn:hover { color: #111; }
         .wish-item { padding: 15px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .wish-item-name { font-weight: 700; font-size: 18px; color: #111; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 12px 24px; font-family: 'Noto Sans KR'; font-weight: 700; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: none; z-index: 9999; }
     </style>
     
     <!-- 카카오 자바스크립트 키 -->
@@ -86,7 +83,6 @@
     <h2>Seoul Pop-up Archive</h2>
     
     <div class="main-container">
-        <!-- 상단 컨트롤러 -->
         <div class="top-nav">
             <div class="nav-left"><input type="date" id="datePicker"></div>
             <div class="nav-center" id="categoryBox">
@@ -100,26 +96,21 @@
             <div class="nav-right"><button id="openWishlistBtn">❤️ 찜한 pop-up (<span id="wishCount">0</span>)</button></div>
         </div>
 
-        <!-- 지도 영역 (1200px)과 예외적 버튼을 관리하는 래퍼 -->
         <div class="map-section-wrapper">
-            <!-- 슬라이드 뷰 영역 -->
             <div class="content-wrapper" id="contentWrapper">
                 <div id="map-panel" class="view-panel"><div id="map"></div></div>
                 <div id="calendar-panel" class="view-panel"><div id="calendar" style="height: 100%;"></div></div>
             </div>
 
-            <!-- 지도 영역에서 완전히 독립하여 허공에 매달린 버튼 -->
             <div class="side-toggle-wrapper">
                 <button class="view-btn active-view" id="mapViewBtn">🗺️ 맵</button>
                 <button class="view-btn" id="calViewBtn">📅 달력</button>
             </div>
         </div>
 
-        <!-- 카드 영역 -->
         <div class="grid-container" id="gridContainer"></div>
     </div>
 
-    <!-- 상세 모달 -->
     <div class="modal-overlay" id="detailModal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('detailModal').style.display='none'">&times;</span>
@@ -132,7 +123,6 @@
         </div>
     </div>
 
-    <!-- 찜 목록 모달 -->
     <div class="modal-overlay" id="wishlistModal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('wishlistModal').style.display='none'">&times;</span>
@@ -141,6 +131,8 @@
             <div id="wishlistContent" style="overflow-y: auto; flex: 1;"></div>
         </div>
     </div>
+
+    <div id="toast">✅ 팝업스토어 정보가 클립보드에 복사되었습니다!</div>
 
     <script>
         var map = new kakao.maps.Map(document.getElementById('map'), { center: new kakao.maps.LatLng(37.5445, 126.9780), level: 8 });
@@ -174,7 +166,7 @@
             
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                initialDate: document.getElementById('datePicker').value || '2026-04-20',
+                initialDate: document.getElementById('datePicker').value,
                 events: calendarEvents,
                 headerToolbar: { left: 'prev,next', center: 'title', right: 'today' },
                 datesSet: function() {
@@ -189,11 +181,15 @@
             calendarInstance.render();
         }
 
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
         function renderUI() {
             const filteredData = selectedCategory === '전체' ? currentData : currentData.filter(p => p.category === selectedCategory);
-
-            markers.forEach(m => m.setMap(null)); infowindows.forEach(iw => iw.close());
-            markers = []; infowindows = [];
+            markers.forEach(m => m.setMap(null)); markers = [];
             
             filteredData.forEach(popup => {
                 let pos = new kakao.maps.LatLng(popup.lat, popup.lng);
@@ -210,7 +206,12 @@
                 card.className = 'card';
                 card.innerHTML = `
                     <div class="card-bg" style="background-image: url('${popup.image_url}')"></div>
-                    <div class="like-btn ${isLiked ? 'liked' : ''}" data-id="${popup.id}">${isLiked ? '♥' : '♡'}</div>
+                    <div class="card-actions">
+                        <div class="action-btn share-btn" title="공유하기">
+                            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        </div>
+                        <div class="action-btn like-btn ${isLiked ? 'liked' : ''}">${isLiked ? '♥' : '♡'}</div>
+                    </div>
                     <div class="card-content">
                         <div style="color:${getCategoryColor(popup.category)}; font-weight:700; font-size:12px; margin-bottom:5px;">[${popup.category}]</div>
                         <div class="card-name">${popup.name}</div>
@@ -219,9 +220,15 @@
                 `;
                 card.onclick = () => { map.panTo(new kakao.maps.LatLng(popup.lat, popup.lng)); openDetail(popup); };
                 card.querySelector('.like-btn').onclick = (e) => { e.stopPropagation(); toggleWishlist(popup, e.target); };
+                card.querySelector('.share-btn').onclick = async (e) => {
+                    e.stopPropagation();
+                    const shareUrl = `https://popup-map.onrender.com/?id=${popup.id}&date=${popup.start_date}`;
+                    const shareText = `✨ [${popup.category}] ${popup.name}\n📍 위치: ${popup.address}\n📅 기간: ${popup.start_date} ~ ${popup.end_date}\n📝 소개: ${popup.description}\n🔗 ${shareUrl}`;
+                    if (navigator.share) await navigator.share({ title: popup.name, text: shareText });
+                    else { await navigator.clipboard.writeText(shareText); showToast(); }
+                };
                 grid.appendChild(card);
             });
-
             renderCalendar(filteredData);
         }
 
@@ -229,19 +236,8 @@
         const calViewBtn = document.getElementById('calViewBtn');
         const contentWrapper = document.getElementById('contentWrapper');
 
-        mapViewBtn.addEventListener('click', () => {
-            contentWrapper.classList.remove('show-calendar');
-            mapViewBtn.classList.add('active-view'); 
-            calViewBtn.classList.remove('active-view'); 
-            setTimeout(() => { map.relayout(); }, 600); 
-        });
-
-        calViewBtn.addEventListener('click', () => {
-            contentWrapper.classList.add('show-calendar');
-            calViewBtn.classList.add('active-view'); 
-            mapViewBtn.classList.remove('active-view'); 
-            setTimeout(() => { calendarInstance.render(); }, 600); 
-        });
+        mapViewBtn.onclick = () => { contentWrapper.classList.remove('show-calendar'); mapViewBtn.classList.add('active-view'); calViewBtn.classList.remove('active-view'); setTimeout(() => map.relayout(), 600); };
+        calViewBtn.onclick = () => { contentWrapper.classList.add('show-calendar'); calViewBtn.classList.add('active-view'); mapViewBtn.classList.remove('active-view'); setTimeout(() => calendarInstance.render(), 600); };
 
         function toggleWishlist(popup, heartElement) {
             const index = wishlist.findIndex(item => item.id === popup.id);
@@ -252,7 +248,7 @@
 
         document.getElementById('openWishlistBtn').onclick = () => {
             const content = document.getElementById('wishlistContent');
-            if(wishlist.length === 0) { content.innerHTML = '<p style="color:#777;">아직 찜한 팝업이 없습니다.</p>'; } 
+            if(wishlist.length === 0) content.innerHTML = '<p style="color:#777;">아직 찜한 팝업이 없습니다.</p>';
             else {
                 content.innerHTML = wishlist.map(p => `
                     <div class="wish-item">
@@ -285,16 +281,47 @@
         });
 
         document.querySelectorAll('.tag-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.onclick = (e) => {
                 document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 selectedCategory = e.target.dataset.cat;
                 renderUI();
-            });
+            };
         });
 
-        // 🔥 새로고침 시 빈 달력과 지도를 미리 그려두기 위한 초기화
-        renderUI();
+        async function initPage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedPopupId = urlParams.get('id');
+            const sharedDate = urlParams.get('date');
+            
+            // 오늘 날짜 계산
+            const today = new Date();
+            const todayString = today.toISOString().split('T')[0];
+
+            // 공유 날짜가 있으면 그것을, 없으면 오늘 날짜를 기본값으로 사용
+            const targetDate = sharedDate || todayString;
+            document.getElementById('datePicker').value = targetDate;
+            
+            try {
+                const res = await fetch(`/api/popups?target_date=${targetDate}`);
+                const result = await res.json();
+                currentData = result.data;
+            } catch(e) { console.error("로드 실패", e); currentData = []; }
+            
+            renderUI();
+
+            if (sharedPopupId && currentData.length > 0) {
+                const targetPopup = currentData.find(p => String(p.id) === String(sharedPopupId));
+                if (targetPopup) {
+                    setTimeout(() => {
+                        map.panTo(new kakao.maps.LatLng(targetPopup.lat, targetPopup.lng));
+                        openDetail(targetPopup);
+                    }, 600); 
+                }
+            }
+        }
+
+        initPage();
     </script>
 </body>
 </html>
